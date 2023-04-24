@@ -2,6 +2,8 @@
 
 {% block content %}
 <div class="container">
+    <p>username:{{request.user}}</p>
+    <p>resume path: {{request.user.resume.path}}</p>
     <div class="row">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
