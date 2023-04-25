@@ -3,7 +3,6 @@
 {% block content %}
 <div class="container">
     <p>username:{{request.user}}</p>
-    <p>resume path: {{request.user.resume.path}}</p>
     <div class="row">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -17,7 +16,8 @@
     </div>
     <div class="row">
         <div class="col-md-10 offset-md-1">
-            <p class="lead">{{ summary }}</p>
+            <img src={{}} alt="">
+            <!-- <p class="lead">{{ summary }}</p> -->
         </div>
     </div>
 </div>
