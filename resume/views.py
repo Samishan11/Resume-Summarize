@@ -8,43 +8,27 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 import nltk
+import re
 
 nltk.download("punkt")
 
 
-# def extract_experiences_skills(text):
-#     """
-#     Extracts 'Experiences' and 'Skills' sections from the text.
-#     Assumes that 'Experiences' section comes before 'Skills' section in the text.
-#     """
-#     experiences = ""
-#     skills = ""
-#     keyword_experiences = "Experiences"
-#     keyword_skills = "Skills"
-#     # Split the text by newline to get each line
-#     lines = text.split("\n")
-#     for line in lines:
-#         if keyword_experiences in line:
-#             # Extract 'Experiences' section
-#             experiences = line.replace(keyword_experiences, "").strip()
-#         elif keyword_skills in line:
-#             # Extract 'Skills' section
-#             skills = line.replace(keyword_skills, "").strip()
-
-#     return experiences, skills
+def extract_email_and_phone(text):
+    email_pattern = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+    phone_pattern = r"\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b"
+    emails = re.findall(email_pattern, text)
+    phones = re.findall(phone_pattern, text)
+    return emails, phones
 
 
 def extract_experiences_and_skills(text):
-    # print(text)
     experiences = []
     skills = []
     lines = text.split("\n")
     for line in lines:
-        print(line)
         if line.lower().startswith("experiences"):
             experiences = [exp.strip() for exp in line.split(":")[1].split(",")]
         elif line.lower().startswith("skills"):
-            print(line.lower().startswith("skills"))
             skills = [skill.strip() for skill in line.split(":")[1].split(",")]
     return experiences, skills
 
@@ -83,13 +67,22 @@ def upload_resume(request):
                     summarized_text = " ".join(summarized_text)
 
                 # Extract 'Experiences' and 'Skills' sections from the summarized text
-                # experiences, skills = extract_experiences_skills(summarized_text)
+                # a = "Summary Senior Web Developer specializing in front end development.\nSkills:\n- Project management\n- Strong decision maker\n- Complex problem solver\n- Creative design\n- Innovative\n- Service-focused\nExperience:\nWeb Developer - 09/2015 to 05/2019\nLuna Web Design, New York\n- Cooperate with designers to create clean interfaces and simple, intuitive interactions and experiences.\n- Work with senior developer to manage large, complex design projects for corporate clients."
+                # a = "Summary: Senior Web Developer specializing in front end development.\nSkills:\n- Project management\n- Strong decision maker\n- Complex problem solver\n- Creative design\n- Innovative\n- Service-focused\nExperience:\nWeb Developer - 09/2015 to 05/2019\nLuna Web Design, New York\n- Cooperate with designers to create clean interfaces and simple, intuitive interactions and experiences.\n- Work with senior developer to manage large, complex design projects for corporate clients."
+                a = "Summary: Senior Web Developer specializing in front end development.\nSkills:\n- Project management\n- Strong decision maker\n- Complex problem solver\n- Creative design\n- Innovative\n- Service-focused\nExperience:\nWeb Developer - 09/2015 to 05/2019\nLuna Web Design, New York\n- Cooperate with designers to create clean interfaces and simple, intuitive interactions and experiences.\n- Work with senior developer to manage large, complex design projects for corporate clients."
 
                 experiences, skills = extract_experiences_and_skills(summarized_text)
+                # emails, phones = extract_email_and_phone(summarized_text)
+                with open(file_path, "rb") as file:
+                    pdf_reader = PdfReader(file)
+                    for page_num in range(len(pdf_reader.pages)):
+                        page = pdf_reader.pages[page_num]
+                        text += page.extract_text()
 
+                emails, phones = extract_email_and_phone(summarized_text)
+                print("Emails:", emails)
+                print("Phones:", phones)
                 # Print the extracted 'Experiences' and 'Skills' sections
-                # print("Experiences:", experiences)
-                # print("Skills:", skills)
                 print("Experiences:")
                 for experience in experiences:
                     print("- " + experience)
@@ -108,4 +101,3 @@ def upload_resume(request):
             return render(request, "resume_upload.html", {"form": form})
     except Exception as e:
         print("error", e)
-        return HttpResponse("An error occurred while processing your request.")
