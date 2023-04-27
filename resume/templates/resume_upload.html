@@ -1,50 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <p>username:{{request.user}}</p>
-    <div class="row">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Upload</button>
-        </form>
-        <div class="col-md-12 text-center mb-5">
-            <h1 class="display-4">Resume Summary</h1>
-            <p>{{summarized_text}}</p>
-            <hr class="bg-primary">
+
+<div class="container-fluid">
+    <!-- Image and text -->
+    <nav class="navbar navbar-expand-lg mb-3 navbar-light bg-light">
+        <a class="navbar-brand" href="#">Welcome User:</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <h4>{{request.user.username}}</h4>
+            </ul>
+
+            <button class="btn btn-danger">Logout</button>
         </div>
-    </div>
-    <div class="row">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-            </tbody>
-        </table>
+    </nav>
+    <div class="container">
+        <div class="row ">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <button class="btn btn-success mt-3" type="submit">Upload</button>
+            </form>
+        </div>
+        <div class="row mt-2">
+            {% if summarized_text %}
+
+            <p>Summarize Text: {{ summarized_text }}</p>
+            {% else %}
+            <p>Loading....</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}
