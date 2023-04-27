@@ -72,7 +72,9 @@ def signin(request):
                 auth.login(request, user)
                 return redirect("/admin")
         else:
-            messages.Info(request, "Username or password not match")
+            messages.add_message(
+                request, messages.ERROR, "Username or Passwords do not match."
+            )
     return render(request, "signin.html")
 
 
@@ -148,9 +150,17 @@ def upload_resume(request):
                         summarized_text
                     )
                     emails, phones = extract_email_and_phone(summarized_text)
-                    print(emails, phones)
+                    # remove email addresses
+                    summarized_text = re.sub(r"\S+@\S+", "", text)
+
+                    # remove phone numbers
+                    summarized_text = re.sub(r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b", "", text)
+
+                    # remove any text containing '@' or 'phone'
+                    summarized_text = re.sub(r"@|phone", "", text, flags=re.IGNORECASE)
                     # Print the extracted 'Experiences' and 'Skills' sections
                     form = ResumeUploadForm(initial={"resume": user_profile.resume})
+                    print(emails)
                     return render(
                         request,
                         "resume_upload.html",
@@ -158,6 +168,8 @@ def upload_resume(request):
                             "form": form,
                             "message": "Resume uploaded successfully!",
                             "summarized_text": summarized_text,
+                            "emails": emails[0],
+                            "phones": phones[0],
                         },
                     )
                     # return render(

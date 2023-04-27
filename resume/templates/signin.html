@@ -36,9 +36,7 @@
                         <input id='password' name='password' class="form-control" placeholder="Password"
                             type="password">
                     </div> <!-- form-group// -->
-                    {% if message in messages %}
-                    {{message}}
-                    {% endif %}
+
 
                     <div class='px-2 text-secondary m-0'>
                         <input type="checkbox" id='remember'>
@@ -56,7 +54,15 @@
 
                     <p class="text-center">Don't have an account? <a class="text-primary" href="/signup">Create
                             account</a> </p>
+
                 </form>
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <span{% if message.tags %} class="{{ message.tags }} text-danger" {% endif %}>{{ message }}</span>
+                        {% endfor %}
+                </ul>
+                {% endif %}
             </article>
         </div> <!-- card.// -->
     </div>

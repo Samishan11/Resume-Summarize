@@ -31,7 +31,11 @@
         <div class="row mt-2">
             {% if summarized_text %}
 
-            <p>Summarize Text: {{ summarized_text }}</p>
+            <ul>
+                <p>Email: {{ emails }}</p>
+                <p>Contact: {{ phones }}</p>
+                <p>Other Information: {{ summarized_text }}</p>
+            </ul>
             {% else %}
             <p>Loading....</p>
             {% endif %}
