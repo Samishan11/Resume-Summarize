@@ -168,8 +168,6 @@ def upload_resume(request):
                             "form": form,
                             "message": "Resume uploaded successfully!",
                             "summarized_text": summarized_text,
-                            "emails": emails[0],
-                            "phones": phones[0],
                         },
                     )
                     # return render(
